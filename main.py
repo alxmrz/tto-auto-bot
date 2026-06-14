@@ -5,6 +5,8 @@ import pyautogui
 import time
 from pynput import keyboard
 
+from src import AI
+
 
 class GridBot:
     def __init__(self, grid_template_path, template_o_path, template_x_path, template_ok_button_path,
@@ -40,8 +42,6 @@ class GridBot:
 
     def find_matched(self, template_img, source_image=None):
         with mss.MSS() as sct:
-            # Скриншот всего экрана
-
             if source_image is None:
                 screenshot = sct.grab(sct.monitors[1])
                 source_image = np.array(screenshot)
@@ -166,26 +166,10 @@ class GridBot:
 
         pyautogui.click(x + 10, y + 3)
 
-    def get_cell_to_click(self):
-        cells = self.get_cells()
-
-        if cells is None:
-            return None
-
-        print("CELLS: ", cells)
-
-        for cells_row in cells:
-            for cell in cells_row:
-                print(cell)
-                if cell[2] == 'N':
-                    return cell
-
-        return None
-
     def run(self):
         self.finish_game()
 
-        cell = self.get_cell_to_click()
+        cell = AI.find_next_click(self.get_cells())
 
         if cell is None:
             return
@@ -200,12 +184,12 @@ def on_press(key):
         running = False
 
 
-bot = GridBot(grid_template_path="template_grid.png",
-              template_o_path="template_o.png",
-              template_x_path="template_x.png",
-              template_ok_button_path="ok_button.png",
-              template_easy_level_path="easy_difficult.png",
-              template_hard_level_path="hard_difficult.png",
+bot = GridBot(grid_template_path="resources/template_grid.png",
+              template_o_path="resources/template_o.png",
+              template_x_path="resources/template_x.png",
+              template_ok_button_path="resources/ok_button.png",
+              template_easy_level_path="resources/easy_difficult.png",
+              template_hard_level_path="resources/hard_difficult.png",
               rows=3,
               cols=3
               )
