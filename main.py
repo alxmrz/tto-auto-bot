@@ -5,14 +5,19 @@ import pyautogui
 import time
 from pynput import keyboard
 
+
 class GridBot:
-    def __init__(self, grid_template_path, template_o_path, template_x_path, template_ok_button_path, rows, cols):
+    def __init__(self, grid_template_path, template_o_path, template_x_path, template_ok_button_path,
+                 template_easy_level_path, template_hard_level_path, rows, cols):
         # Загружаем шаблон всей сетки
         self.template_grid = cv2.imread(grid_template_path, 0)
         self.template_o = cv2.imread(template_o_path, 0)
         self.template_x = cv2.imread(template_x_path, 0)
         self.template_h, self.template_w = self.template_grid.shape
         self.template_button = cv2.imread(template_ok_button_path, 0)
+        self.template_easy_level = cv2.imread(template_easy_level_path, 0)
+        self.template_hard_level = cv2.imread(template_hard_level_path, 0)
+
 
         self.rows = rows  # например, 9 для крестиков-ноликов
         self.cols = cols  # например, 9
@@ -103,7 +108,7 @@ class GridBot:
         return cells
 
     def click_cell(self, cell):
-        x, y,_ = cell
+        x, y, _ = cell
         pyautogui.click(x, y)
 
     def get_cells(self):
@@ -128,7 +133,7 @@ class GridBot:
                     row[cell_index] = cell + (value,)
         return cell_coords
 
-    def click_ok_button(self):
+    def finish_game(self):
         ok_coords = self.find_matched(self.template_button)
 
         if ok_coords is None:
@@ -136,7 +141,30 @@ class GridBot:
 
         x, y = ok_coords
 
-        pyautogui.click(x+20, y+5)
+        pyautogui.click(x + 20, y + 5)
+
+        time.sleep(0.5)
+
+        self.set_difficult_level()
+
+    def set_difficult_level(self):
+        easy_coords = self.find_matched(self.template_easy_level)
+
+        if easy_coords is None:
+            return
+
+        x, y = easy_coords
+
+        pyautogui.click(x + 20, y + 8)
+
+        hard_coords = self.find_matched(self.template_hard_level)
+
+        if hard_coords is None:
+            return
+
+        x, y = hard_coords
+
+        pyautogui.click(x + 10, y + 3)
 
     def get_cell_to_click(self):
         cells = self.get_cells()
@@ -155,7 +183,7 @@ class GridBot:
         return None
 
     def run(self):
-        self.click_ok_button()
+        self.finish_game()
 
         cell = self.get_cell_to_click()
 
@@ -164,23 +192,26 @@ class GridBot:
 
         self.click_cell(cell)
 
+
 def on_press(key):
     global running
     if key == keyboard.Key.esc:
         print("EXIT")
         running = False
 
+
 bot = GridBot(grid_template_path="template_grid.png",
               template_o_path="template_o.png",
               template_x_path="template_x.png",
               template_ok_button_path="ok_button.png",
+              template_easy_level_path="easy_difficult.png",
+              template_hard_level_path="hard_difficult.png",
               rows=3,
               cols=3
               )
 
 listener = keyboard.Listener(on_press=on_press)
 listener.start()
-
 
 running = True
 
