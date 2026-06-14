@@ -12,17 +12,20 @@ class Bot:
         self.hands = hands
         self.logger = logger
 
-    def run(self):
-        self.finish_game()
+    def run(self) -> None:
+        try:
+            self.finish_game()
 
-        cell = self.brain.compute(self.eyes.get_cells())
+            cell = self.brain.compute(self.eyes.get_cells())
 
-        if cell is None:
-            return
+            if cell is None:
+                return
 
-        self.hands.click_cell(cell)
+            self.hands.click_cell(cell)
+        except Exception as e:
+            self.logger.info("BOT ERROR:", e)
 
-    def finish_game(self):
+    def finish_game(self) -> None:
         ok_coords = self.eyes.find_ok_button()
 
         if ok_coords is None:

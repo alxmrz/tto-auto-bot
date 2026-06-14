@@ -25,7 +25,8 @@ No tests, linter, formatter, typechecker, or CI configured.
 | `src/config.py` | Config dataclass — paths, grid dimensions |
 | `src/eyes.py` | Eyes — screen detection via Image helpers |
 | `src/hands.py` | Hands — click helpers |
-| `src/image.py` | `find_template`, `capture_region` (low-level) |
+| `src/image.py` | `Image` class — `find_template`, `capture_region` (single `mss.MSS` instance) |
+| `src/types.py` | `Cell` NamedTuple — `x`, `y`, `value` |
 | `src/logger.py` | Logger — conditional console output |
 | `resources/` | Template images for grid, X, O, OK button, difficulty buttons |
 | `screen_shots/` | Runtime cell captures (gitignored) |

@@ -1,4 +1,6 @@
 import time
+
+import mss
 from pynput import keyboard
 
 from src.bot import Bot
@@ -6,6 +8,7 @@ from src.brain import EasyBrain
 from src.config import Config
 from src.eyes import Eyes
 from src.hands import Hands
+from src.image import Image
 from src.logger import Logger
 
 
@@ -17,13 +20,20 @@ def on_press(key):
 
 
 logger = Logger(enable=True)
-bot = Bot(EasyBrain(logger), Eyes(Config(), logger), Hands(), logger)
+config = Config()
+sct = mss.MSS()
 
-listener = keyboard.Listener(on_press=on_press)
-listener.start()
+try:
+    image = Image(sct)
+    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(), logger)
 
-running = True
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
 
-while running:
-    bot.run()
-    time.sleep(1)
+    running = True
+
+    while running:
+        bot.run()
+        time.sleep(1)
+finally:
+    sct.close()
