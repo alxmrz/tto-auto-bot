@@ -8,6 +8,46 @@ from pynput import keyboard
 from src import AI
 
 
+def find_matched(template_img, source_image=None):
+    with mss.MSS() as sct:
+        if source_image is None:
+            screenshot = sct.grab(sct.monitors[1])
+            source_image = np.array(screenshot)
+
+        gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
+
+        # Ищем шаблон всей сетки
+        result = cv2.matchTemplate(gray, template_img, cv2.TM_CCOEFF_NORMED)
+
+        # Находим лучшее совпадение
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+        if max_val > 0.8:  # 80% уверенности
+            # max_loc = (x, y) левого верхнего угла шаблона на экране
+            grid_x, grid_y = max_loc
+            return grid_x, grid_y
+        else:
+            return None
+
+
+def get_image_at(x, y, width, height):
+    """Возвращает изображение области экрана с координатами (x, y) и размером width x height"""
+    with mss.MSS() as sct:
+        zone = {
+            "left": int(x),
+            "top": int(y),
+            "width": int(width),
+            "height": int(height)
+        }
+        screenshot = sct.grab(zone)
+        return np.array(screenshot)
+
+
+def click_cell(cell):
+    x, y, _ = cell
+    pyautogui.click(x, y)
+
+
 class GridBot:
     def __init__(self, grid_template_path, template_o_path, template_x_path, template_ok_button_path,
                  template_easy_level_path, template_hard_level_path, rows, cols):
@@ -19,7 +59,7 @@ class GridBot:
         self.template_button = cv2.imread(template_ok_button_path, 0)
         self.template_easy_level = cv2.imread(template_easy_level_path, 0)
         self.template_hard_level = cv2.imread(template_hard_level_path, 0)
-
+        self.grid_pos = None
 
         self.rows = rows  # например, 9 для крестиков-ноликов
         self.cols = cols  # например, 9
@@ -31,47 +71,20 @@ class GridBot:
         print(f"Размер клетки: {self.cell_w} x {self.cell_h}")
 
     def find_grid_on_screen(self):
-        grid_pos = self.find_matched(self.template_grid)
+        if self.grid_pos is None:
+            grid_pos = find_matched(self.template_grid)
 
-        if grid_pos:
-            print("Сетка найдена ", grid_pos)
-            return grid_pos
-        else:
-            print("Сетка не найдена!")
-            return None
+            if grid_pos:
+                print("Сетка найдена ", grid_pos)
 
-    def find_matched(self, template_img, source_image=None):
-        with mss.MSS() as sct:
-            if source_image is None:
-                screenshot = sct.grab(sct.monitors[1])
-                source_image = np.array(screenshot)
+                self.grid_pos = grid_pos
 
-            gray = cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY)
-
-            # Ищем шаблон всей сетки
-            result = cv2.matchTemplate(gray, template_img, cv2.TM_CCOEFF_NORMED)
-
-            # Находим лучшее совпадение
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-
-            if max_val > 0.8:  # 80% уверенности
-                # max_loc = (x, y) левого верхнего угла шаблона на экране
-                grid_x, grid_y = max_loc
-                return grid_x, grid_y
+                return grid_pos
             else:
+                print("Сетка не найдена!")
                 return None
-
-    def get_image_at(self, x, y, width, height):
-        """Возвращает изображение области экрана с координатами (x, y) и размером width x height"""
-        with mss.MSS() as sct:
-            zone = {
-                "left": int(x),
-                "top": int(y),
-                "width": int(width),
-                "height": int(height)
-            }
-            screenshot = sct.grab(zone)
-            return np.array(screenshot)
+        else:
+            return self.grid_pos
 
     def get_all_cell_coords(self):
         """Возвращает матрицу с координатами центров всех клеток"""
@@ -100,33 +113,29 @@ class GridBot:
                 else:
                     offset_y = 0
 
-                cell_x = grid_x + offset_x + col * self.cell_w  # + self.cell_w #// 2
-                cell_y = grid_y - offset_y + row * self.cell_h  # + self.cell_h #// 2
+                cell_x = grid_x + offset_x + col * self.cell_w
+                cell_y = grid_y - offset_y + row * self.cell_h
                 row_cells.append((cell_x, cell_y))
             cells.append(row_cells)
 
         return cells
-
-    def click_cell(self, cell):
-        x, y, _ = cell
-        pyautogui.click(x, y)
 
     def get_cells(self):
         cell_coords = self.get_all_cell_coords()
         if cell_coords:
             for row_index, row in enumerate(cell_coords):
                 for cell_index, cell in enumerate(row):
-                    cell_image = bot.get_image_at(cell[0], cell[1], 63, 63)
+                    cell_image = get_image_at(cell[0], cell[1], 63, 63)
                     file_name = "screen_shots/row_" + str(row_index) + "_cell_" + str(cell_index) + ".png"
                     cv2.imwrite(file_name, cell_image)
 
                     value = "N"
 
-                    x_found = bot.find_matched(self.template_x, cell_image)
+                    x_found = find_matched(self.template_x, cell_image)
                     if x_found:
                         value = "X"
                     else:
-                        o_found = bot.find_matched(self.template_o, cell_image)
+                        o_found = find_matched(self.template_o, cell_image)
                         if o_found:
                             value = "O"
 
@@ -134,7 +143,7 @@ class GridBot:
         return cell_coords
 
     def finish_game(self):
-        ok_coords = self.find_matched(self.template_button)
+        ok_coords = find_matched(self.template_button)
 
         if ok_coords is None:
             return
@@ -148,7 +157,7 @@ class GridBot:
         self.set_difficult_level()
 
     def set_difficult_level(self):
-        easy_coords = self.find_matched(self.template_easy_level)
+        easy_coords = find_matched(self.template_easy_level)
 
         if easy_coords is None:
             return
@@ -157,7 +166,7 @@ class GridBot:
 
         pyautogui.click(x + 20, y + 8)
 
-        hard_coords = self.find_matched(self.template_hard_level)
+        hard_coords = find_matched(self.template_hard_level)
 
         if hard_coords is None:
             return
@@ -174,7 +183,7 @@ class GridBot:
         if cell is None:
             return
 
-        self.click_cell(cell)
+        click_cell(cell)
 
 
 def on_press(key):
