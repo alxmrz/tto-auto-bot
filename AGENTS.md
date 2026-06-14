@@ -5,6 +5,7 @@ Tic-Tac-Toe bot using OpenCV template matching + screen capture. Detects a 3×3 
 ## Commands
 
 ```bash
+make install      # pip install -r requirements.txt
 make run          # python3 main.py
 ```
 
@@ -12,16 +13,20 @@ No tests, linter, formatter, typechecker, or CI configured.
 
 ## Dependencies
 
-- `mss`, `opencv-python`, `numpy`, `pyautogui`, `pynput`
-- No `requirements.txt` or `pyproject.toml` — install manually or use `.venv`
+- Defined in `requirements.txt`: `mss`, `opencv-python`, `numpy`, `pyautogui`, `pynput`
 
 ## Structure
 
 | Path | Purpose |
 |---|---|
-| `main.py` | Entrypoint: screen capture, grid detection, clicking |
-| `src/AI.py` | AI logic — currently picks first empty cell (stub) |
-| `src/Image.py` | Empty / unused |
+| `main.py` | Entrypoint: listener + main loop |
+| `src/bot.py` | Bot orchestrator: finish_game, run |
+| `src/brain.py` | EasyBrain — AI logic, picks first empty cell |
+| `src/config.py` | Config dataclass — paths, grid dimensions |
+| `src/eyes.py` | Eyes — screen detection via Image helpers |
+| `src/hands.py` | Hands — click helpers |
+| `src/image.py` | `find_template`, `capture_region` (low-level) |
+| `src/logger.py` | Logger — conditional console output |
 | `resources/` | Template images for grid, X, O, OK button, difficulty buttons |
 | `screen_shots/` | Runtime cell captures (gitignored) |
 
@@ -33,6 +38,5 @@ No tests, linter, formatter, typechecker, or CI configured.
 ## Quirks
 
 - `make run` requires a display (X11/Wayland) — will fail headless
-- Grid is 3×3 hardcoded; cell size hardcoded at 63×63 px
-- `src/AI.py` and `src/Image.py` are the places to extend for smarter play or image utilities
+- Grid dimensions and cell size are in `Config` (defaults: 3×3, 63×63 px)
 - No virtual environment tracked in repo; `.venv/` is gitignored

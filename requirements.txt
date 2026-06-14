@@ -1,0 +1,5 @@
+mss ~= 10.2
+opencv-python ~= 4.13
+numpy ~= 2.4
+pyautogui ~= 0.9
+pynput ~= 1.8
