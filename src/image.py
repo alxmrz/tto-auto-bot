@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Image:
-    def __init__(self, sct: mss.MSS, threshold: float = 0.8):
+    def __init__(self, sct: mss.MSS, threshold: float):
         self.sct = sct
         self.threshold = threshold
 

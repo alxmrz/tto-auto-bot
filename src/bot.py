@@ -3,27 +3,30 @@ import time
 from src.brain import EasyBrain
 from src.eyes import Eyes
 from src.hands import Hands
+from src.logger import Logger
 
 
 class Bot:
-    def __init__(self, brain: EasyBrain, eyes: Eyes, hands: Hands, logger):
+    def __init__(self, brain: EasyBrain, eyes: Eyes, hands: Hands, logger: Logger):
         self.brain = brain
         self.eyes = eyes
         self.hands = hands
         self.logger = logger
 
     def run(self) -> None:
-        try:
-            self.finish_game()
+        self.finish_game()
 
-            cell = self.brain.compute(self.eyes.get_cells())
+        cells = self.eyes.get_cells()
 
-            if cell is None:
-                return
+        if cells is None:
+            raise RuntimeError("Cells not found")
 
-            self.hands.click_cell(cell)
-        except Exception as e:
-            self.logger.info("BOT ERROR:", e)
+        cell = self.brain.compute(cells=cells)
+
+        if cell is None:
+            return
+
+        self.hands.click_cell(cell)
 
     def finish_game(self) -> None:
         ok_coords = self.eyes.find_ok_button()

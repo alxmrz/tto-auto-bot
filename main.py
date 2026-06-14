@@ -1,4 +1,5 @@
 import time
+import traceback
 
 import mss
 from pynput import keyboard
@@ -36,5 +37,8 @@ try:
     while running:
         bot.run()
         time.sleep(1)
+except Exception as e:
+    logger.info(e)
+    traceback.print_exc()
 finally:
     sct.close()

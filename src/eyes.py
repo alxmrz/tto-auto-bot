@@ -5,11 +5,12 @@ import numpy as np
 
 from src.config import Config
 from src.image import Image
+from src.logger import Logger
 from src.types import Cell
 
 
 class Eyes:
-    def __init__(self, config: Config, image: Image, logger):
+    def __init__(self, config: Config, image: Image, logger: Logger):
         self.config = config
         self.image = image
         self.logger = logger
