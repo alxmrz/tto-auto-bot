@@ -13,7 +13,8 @@ No tests, linter, formatter, typechecker, or CI configured.
 
 ## Dependencies
 
-- Defined in `requirements.txt`: `mss`, `opencv-python`, `numpy`, `pyautogui`, `pynput`
+- Defined in `pyproject.toml` under `[project] dependencies`
+- Requires Python ≥ 3.10 (specified via `requires-python`)
 
 ## Structure
 
@@ -35,6 +36,7 @@ No tests, linter, formatter, typechecker, or CI configured.
 
 - Commits must follow [Conventional Commits](https://www.conventionalcommits.org/) format (e.g. `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
 - After every change add to AGENTS.md relevant important information
+- Use `X | None` syntax instead of `Optional[X]` (Python 3.10+ union types)
 
 ## Quirks
 

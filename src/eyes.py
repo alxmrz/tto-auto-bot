@@ -1,5 +1,3 @@
-from typing import Optional
-
 import cv2
 import numpy as np
 
@@ -28,7 +26,7 @@ class Eyes:
             raise FileNotFoundError(f"Template not found: {path}")
         return template
 
-    def find_grid_on_screen(self) -> Optional[tuple[int, int]]:
+    def find_grid_on_screen(self) -> tuple[int, int] | None:
         if self.grid_pos is None:
             grid_pos = self.image.find_template(self.template_grid)
 
@@ -42,7 +40,7 @@ class Eyes:
         else:
             return self.grid_pos
 
-    def get_all_cell_coords(self) -> Optional[list[list[tuple[int, int]]]]:
+    def get_all_cell_coords(self) -> list[list[tuple[int, int]]] | None:
         pos = self.find_grid_on_screen()
         if not pos:
             return None
@@ -73,7 +71,7 @@ class Eyes:
 
         return cells
 
-    def get_cells(self) -> Optional[list[list[Cell]]]:
+    def get_cells(self) -> list[list[Cell]] | None:
         cell_coords = self.get_all_cell_coords()
         if cell_coords is None:
             return None
@@ -98,11 +96,11 @@ class Eyes:
 
         return cell_coords
 
-    def find_ok_button(self) -> Optional[tuple[int, int]]:
+    def find_ok_button(self) -> tuple[int, int] | None:
         return self.image.find_template(self.template_button)
 
-    def find_easy_level(self) -> Optional[tuple[int, int]]:
+    def find_easy_level(self) -> tuple[int, int] | None:
         return self.image.find_template(self.template_easy_level)
 
-    def find_hard_level(self) -> Optional[tuple[int, int]]:
+    def find_hard_level(self) -> tuple[int, int] | None:
         return self.image.find_template(self.template_hard_level)

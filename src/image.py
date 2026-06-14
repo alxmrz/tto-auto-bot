@@ -1,5 +1,3 @@
-from typing import Optional
-
 import cv2
 import mss
 import numpy as np
@@ -11,8 +9,8 @@ class Image:
         self.threshold = threshold
 
     def find_template(
-        self, template_img: np.ndarray, source_image: Optional[np.ndarray] = None
-    ) -> Optional[tuple[int, int]]:
+        self, template_img: np.ndarray, source_image: np.ndarray | None = None
+    ) -> tuple[int, int] | None:
         if source_image is None:
             screenshot = self.sct.grab(self.sct.monitors[1])
             source_image = np.array(screenshot)

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from src.logger import Logger
 from src.types import Cell
 
@@ -8,7 +6,7 @@ class EasyBrain:
     def __init__(self, logger: Logger):
         self.logger = logger
 
-    def compute(self, cells: list[list[Cell]]) -> Optional[Cell]:
+    def compute(self, cells: list[list[Cell]]) -> Cell | None:
         self.logger.info("CELLS:", cells)
 
         for cells_row in cells:
