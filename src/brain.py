@@ -1,10 +1,11 @@
 from typing import Optional
 
+from src.logger import Logger
 from src.types import Cell
 
 
 class EasyBrain:
-    def __init__(self, logger):
+    def __init__(self, logger: Logger):
         self.logger = logger
 
     def compute(self, cells: list[list[Cell]]) -> Optional[Cell]:

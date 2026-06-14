@@ -13,4 +13,5 @@ class Config:
     cols: int = 3
     cell_w: int = 63
     cell_h: int = 63
+    threshold: float = 0.8
     debug: bool = True

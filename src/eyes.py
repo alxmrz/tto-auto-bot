@@ -1,6 +1,7 @@
 from typing import Optional
 
 import cv2
+import numpy as np
 
 from src.config import Config
 from src.image import Image
@@ -12,14 +13,19 @@ class Eyes:
         self.config = config
         self.image = image
         self.logger = logger
-        self.template_grid = cv2.imread(config.grid_template_path, 0)
-        self.template_o = cv2.imread(config.template_o_path, 0)
-        self.template_x = cv2.imread(config.template_x_path, 0)
-        self.template_h, self.template_w = self.template_grid.shape
-        self.template_button = cv2.imread(config.template_ok_button_path, 0)
-        self.template_easy_level = cv2.imread(config.template_easy_level_path, 0)
-        self.template_hard_level = cv2.imread(config.template_hard_level_path, 0)
+        self.template_grid = self._load_template(config.grid_template_path)
+        self.template_o = self._load_template(config.template_o_path)
+        self.template_x = self._load_template(config.template_x_path)
+        self.template_button = self._load_template(config.template_ok_button_path)
+        self.template_easy_level = self._load_template(config.template_easy_level_path)
+        self.template_hard_level = self._load_template(config.template_hard_level_path)
         self.grid_pos = None
+
+    def _load_template(self, path: str) -> np.ndarray:
+        template = cv2.imread(path, 0)
+        if template is None:
+            raise FileNotFoundError(f"Template not found: {path}")
+        return template
 
     def find_grid_on_screen(self) -> Optional[tuple[int, int]]:
         if self.grid_pos is None:
@@ -73,23 +79,21 @@ class Eyes:
 
         for row_index, row in enumerate(cell_coords):
             for cell_index, cell in enumerate(row):
-                cell_image = self.image.capture_region(cell[0], cell[1], 63, 63)
+                cx, cy = cell
+                cell_image = self.image.capture_region(cx, cy, self.config.cell_w, self.config.cell_h)
 
                 if self.config.debug:
-                    file_name = "screen_shots/row_" + str(row_index) + "_cell_" + str(cell_index) + ".png"
+                    file_name = f"screen_shots/row_{row_index}_cell_{cell_index}.png"
                     cv2.imwrite(file_name, cell_image)
 
                 value = "N"
 
-                x_found = self.image.find_template(self.template_x, cell_image)
-                if x_found:
+                if self.image.find_template(self.template_x, cell_image):
                     value = "X"
-                else:
-                    o_found = self.image.find_template(self.template_o, cell_image)
-                    if o_found:
-                        value = "O"
+                elif self.image.find_template(self.template_o, cell_image):
+                    value = "O"
 
-                row[cell_index] = Cell(x=cell[0], y=cell[1], value=value)
+                row[cell_index] = Cell(x=cx, y=cy, value=value)
 
         return cell_coords
 

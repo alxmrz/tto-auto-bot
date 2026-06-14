@@ -1,13 +1,17 @@
 import pyautogui
 
+from src.logger import Logger
 from src.types import Cell
 
 
 class Hands:
-    @staticmethod
-    def click(x: int, y: int) -> None:
+    def __init__(self, logger: Logger):
+        self.logger = logger
+
+    def click(self, x: int, y: int) -> None:
+        self.logger.info("CLICK:", x, y)
         pyautogui.click(x, y)
 
-    @staticmethod
-    def click_cell(cell: Cell) -> None:
+    def click_cell(self, cell: Cell) -> None:
+        self.logger.info("CLICK_CELL:", cell)
         pyautogui.click(cell.x, cell.y)

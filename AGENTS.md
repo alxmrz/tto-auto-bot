@@ -23,7 +23,7 @@ No tests, linter, formatter, typechecker, or CI configured.
 | `src/bot.py` | Bot orchestrator: finish_game, run |
 | `src/brain.py` | EasyBrain — AI logic, picks first empty cell |
 | `src/config.py` | Config dataclass — paths, grid dimensions |
-| `src/eyes.py` | Eyes — screen detection via Image helpers |
+| `src/eyes.py` | Eyes — screen detection via Image helpers; `_load_template` validates template files |
 | `src/hands.py` | Hands — click helpers |
 | `src/image.py` | `Image` class — `find_template`, `capture_region` (single `mss.MSS` instance) |
 | `src/types.py` | `Cell` NamedTuple — `x`, `y`, `value` |

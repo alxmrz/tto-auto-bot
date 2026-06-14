@@ -1,13 +1,18 @@
+from typing import Optional
+
 import cv2
 import mss
 import numpy as np
 
 
 class Image:
-    def __init__(self, sct: mss.MSS):
+    def __init__(self, sct: mss.MSS, threshold: float = 0.8):
         self.sct = sct
+        self.threshold = threshold
 
-    def find_template(self, template_img, source_image=None):
+    def find_template(
+        self, template_img: np.ndarray, source_image: Optional[np.ndarray] = None
+    ) -> Optional[tuple[int, int]]:
         if source_image is None:
             screenshot = self.sct.grab(self.sct.monitors[1])
             source_image = np.array(screenshot)
@@ -16,12 +21,12 @@ class Image:
         result = cv2.matchTemplate(gray, template_img, cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 
-        if max_val > 0.8:
+        if max_val > self.threshold:
             return max_loc
 
         return None
 
-    def capture_region(self, x, y, width, height):
+    def capture_region(self, x: int, y: int, width: int, height: int) -> np.ndarray:
         zone = {
             "left": int(x),
             "top": int(y),

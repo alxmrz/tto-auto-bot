@@ -12,6 +12,11 @@ from src.image import Image
 from src.logger import Logger
 
 
+logger = Logger(enable=True)
+config = Config()
+running = True
+
+
 def on_press(key):
     global running
     if key == keyboard.Key.esc:
@@ -19,18 +24,14 @@ def on_press(key):
         running = False
 
 
-logger = Logger(enable=True)
-config = Config()
 sct = mss.MSS()
 
 try:
-    image = Image(sct)
-    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(), logger)
+    image = Image(sct, config.threshold)
+    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(logger), logger)
 
     listener = keyboard.Listener(on_press=on_press)
     listener.start()
-
-    running = True
 
     while running:
         bot.run()
