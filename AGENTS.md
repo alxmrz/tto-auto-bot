@@ -28,6 +28,7 @@ No tests, linter, formatter, typechecker, or CI configured.
 ## Conventions
 
 - Commits must follow [Conventional Commits](https://www.conventionalcommits.org/) format (e.g. `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`).
+- After every change add to AGENTS.md relevant important information
 
 ## Quirks
 
