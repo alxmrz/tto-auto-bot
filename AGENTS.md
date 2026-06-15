@@ -5,16 +5,23 @@ Tic-Tac-Toe bot using OpenCV template matching + screen capture. Detects a 3×3 
 ## Commands
 
 ```bash
-make install      # pip install -r requirements.txt
+make install      # pip install -e ".[dev]" (needs venv at .venv/)
 make run          # python3 main.py
+make test         # pytest (needs venv at .venv/)
 ```
 
-No tests, linter, formatter, typechecker, or CI configured.
+## Tests
+
+- Located in `tests/test_brain.py`
+- Uses `pytest` (`make test`)
+- `MediumBrain` blocking tested with `@pytest.mark.parametrize` — 24 cases (3 positions × 8 lines)
+- `MediumBrain` fallback to `EasyBrain` tested with 3 cases (single O, empty board, full board)
 
 ## Dependencies
 
 - Defined in `pyproject.toml` under `[project] dependencies`
 - Requires Python ≥ 3.10 (specified via `requires-python`)
+- Dev dependencies (`pytest`) under `[project.optional-dependencies] dev`
 
 ## Structure
 
@@ -22,7 +29,7 @@ No tests, linter, formatter, typechecker, or CI configured.
 |---|---|
 | `main.py` | Entrypoint: listener + main loop |
 | `src/bot.py` | Bot orchestrator: finish_game, run |
-| `src/brain.py` | EasyBrain — AI logic, picks first empty cell |
+| `src/brain.py` | EasyBrain — picks first empty cell; MediumBrain — blocks opponent 2-in-a-row (lines: 3 rows, 3 cols, 2 diags) |
 | `src/config.py` | Config dataclass — paths, grid dimensions |
 | `src/eyes.py` | Eyes — screen detection via Image helpers; `_load_template` validates template files |
 | `src/hands.py` | Hands — click helpers |

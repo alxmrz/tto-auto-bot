@@ -8,3 +8,6 @@ dependencies = [
     "pyautogui ~= 0.9",
     "pynput ~= 1.8",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest ~= 8.0"]

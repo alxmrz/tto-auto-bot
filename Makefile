@@ -1,5 +1,8 @@
 install:
-	pip install -e .
+	pip install -e ".[dev]"
 
 run:
 	python3 main.py
+
+test:
+	PYTHONPATH=. .venv/bin/python -m pytest tests/ -v
