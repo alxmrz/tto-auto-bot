@@ -4,6 +4,7 @@ from src.brain import MediumBrain
 from src.eyes import Eyes
 from src.hands import Hands
 from src.logger import Logger
+from src.types import Cell
 
 
 class Bot:
@@ -13,7 +14,7 @@ class Bot:
         self.hands = hands
         self.logger = logger
 
-    def run(self) -> None:
+    def run(self) -> list[list[Cell]]:
         self.finish_game()
 
         cells = self.eyes.get_cells()
@@ -24,9 +25,11 @@ class Bot:
         cell = self.brain.compute(cells=cells)
 
         if cell is None:
-            return
+            return []
 
         self.hands.click_cell(cell)
+
+        return cells
 
     def finish_game(self) -> None:
         ok_coords = self.eyes.find_ok_button()
