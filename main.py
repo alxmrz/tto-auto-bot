@@ -29,7 +29,7 @@ sct = mss.MSS()
 
 try:
     image = Image(sct, config.threshold)
-    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(logger), logger)
+    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(config, logger), logger)
 
     listener = keyboard.Listener(on_press=on_press)
     listener.start()

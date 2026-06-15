@@ -1,3 +1,6 @@
+init:
+	cp -n .env.example .env
+
 install:
 	pip install -e ".[dev]"
 
