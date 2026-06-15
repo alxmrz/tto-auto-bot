@@ -5,7 +5,7 @@ import mss
 from pynput import keyboard
 
 from src.bot import Bot
-from src.brain import EasyBrain
+from src.brain import EasyBrain, MediumBrain
 from src.config import Config
 from src.eyes import Eyes
 from src.hands import Hands
@@ -29,7 +29,7 @@ sct = mss.MSS()
 
 try:
     image = Image(sct, config.threshold)
-    bot = Bot(EasyBrain(logger), Eyes(config, image, logger), Hands(config, logger), logger)
+    bot = Bot(MediumBrain(EasyBrain(logger), logger), Eyes(config, image, logger), Hands(config, logger), logger)
 
     listener = keyboard.Listener(on_press=on_press)
     listener.start()

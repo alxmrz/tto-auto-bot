@@ -1,13 +1,13 @@
 import time
 
-from src.brain import EasyBrain
+from src.brain import MediumBrain
 from src.eyes import Eyes
 from src.hands import Hands
 from src.logger import Logger
 
 
 class Bot:
-    def __init__(self, brain: EasyBrain, eyes: Eyes, hands: Hands, logger: Logger):
+    def __init__(self, brain: MediumBrain, eyes: Eyes, hands: Hands, logger: Logger):
         self.brain = brain
         self.eyes = eyes
         self.hands = hands
