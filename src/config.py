@@ -20,6 +20,7 @@ class Config:
     cell_h: int = 63
     threshold: float = 0.8
     debug: bool = True
+    gui_enabled: bool = False
 
     def __post_init__(self) -> None:
         load_dotenv()
@@ -36,3 +37,5 @@ class Config:
         self.threshold = float(os.getenv("THRESHOLD", str(self.threshold)))
         debug_raw = os.getenv("DEBUG", str(self.debug))
         self.debug = debug_raw.lower() in ("true", "1", "yes")
+        gui_raw = os.getenv("GUI_ENABLED", str(self.gui_enabled))
+        self.gui_enabled = gui_raw.lower() in ("true", "1", "yes")

@@ -50,6 +50,7 @@ make test         # pytest (needs venv at .venv/)
 
 ## Quirks
 
-- `make run` requires a display (X11/Wayland) — will fail headless
+- `make run` without GUI (`GUI_ENABLED=false`, default) works headless
+- `GUI_ENABLED=true` requires a display (X11/Wayland) — will fail headless; Qt overlay is non-blocking via `app.processEvents()`
 - Grid dimensions and cell size are in `Config` (defaults: 3×3, 63×63 px; overridable via `.env`)
 - No virtual environment tracked in repo; `.venv/` is gitignored

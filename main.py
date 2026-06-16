@@ -1,15 +1,12 @@
-import sys
 import time
 import traceback
 
 import mss
-from PyQt5.QtWidgets import QApplication
 from pynput import keyboard
 
 from src.bot import Bot
 from src.brain import EasyBrain, MediumBrain
 from src.config import Config
-from src.debug import DebugOverlay
 from src.eyes import Eyes
 from src.hands import Hands
 from src.image import Image
@@ -19,23 +16,28 @@ logger = Logger(enable=True)
 config = Config()
 running = True
 
+app = None
+overlay = None
+
+if config.gui_enabled:
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    from src.debug import DebugOverlay
+
+    app = QApplication(sys.argv)
+    overlay = DebugOverlay()
+
 
 def on_press(key):
     global running
     if key == keyboard.Key.esc:
         logger.info("EXIT")
         running = False
-        app.quit()
+        if app is not None:
+            app.quit()
 
 
 sct = mss.MSS()
-
-# 1. Сначала создаём QApplication
-app = QApplication(sys.argv)
-
-# 2. Потом создаём виджет
-overlay = DebugOverlay()
-
 
 try:
     image = Image(sct, config.threshold)
@@ -47,10 +49,11 @@ try:
     while running:
         cells = bot.run()
 
-        overlay.update_cells(cells)
+        if overlay is not None:
+            overlay.update_cells(cells)
 
-        # 3. Запускаем главный цикл
-        sys.exit(app.exec())
+        if app is not None:
+            app.processEvents()
 
         time.sleep(1)
 
