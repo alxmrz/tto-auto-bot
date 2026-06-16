@@ -23,6 +23,7 @@ make test         # pytest (needs venv at .venv/)
 - Defined in `pyproject.toml` under `[project] dependencies`
 - Requires Python ≥ 3.10 (specified via `requires-python`)
 - Dev dependencies (`pytest`) under `[project.optional-dependencies] dev`
+- Optional GUI dependencies (`PyQt5`) under `[project.optional-dependencies] gui` — install with `pip install -e ".[gui]"` or `pip install -e ".[dev,gui]"`
 
 ## Structure
 
@@ -38,6 +39,7 @@ make test         # pytest (needs venv at .venv/)
 | `src/types.py` | `Cell` NamedTuple — `x`, `y`, `value` |
 | `src/logger.py` | Logger — conditional console output |
 | `resources/` | Template images for grid, X, O, OK button, difficulty buttons |
+| `resources/custom/` | Override templates here for other game styles |
 | `screen_shots/` | Runtime cell captures (gitignored) |
 | `.env.example` | Template for `.env` with all config env vars |
 | `.env` | Local override for config (gitignored; created via `make init`) |
