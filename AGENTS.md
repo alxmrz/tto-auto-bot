@@ -6,7 +6,7 @@ Tic-Tac-Toe bot using OpenCV template matching + screen capture. Detects a 3×3 
 
 ```bash
 make init         # cp -n .env.example .env (creates .env if not exists)
-make install      # pip install -e ".[dev]" (needs venv at .venv/)
+make install      # pip install -r requirements.txt (needs venv at .venv/)
 make run          # python3 main.py
 make test         # pytest (needs venv at .venv/)
 ```
@@ -20,10 +20,10 @@ make test         # pytest (needs venv at .venv/)
 
 ## Dependencies
 
-- Defined in `pyproject.toml` under `[project] dependencies`
-- Requires Python ≥ 3.10 (specified via `requires-python`)
-- Dev dependencies (`pytest`) under `[project.optional-dependencies] dev`
-- Optional GUI dependencies (`PyQt5`) under `[project.optional-dependencies] gui` — install with `pip install -e ".[gui]"` or `pip install -e ".[dev,gui]"`
+- Defined in `requirements.txt`
+- Requires Python ≥ 3.10
+- Dev dependencies (`pytest`) in `requirements-dev.txt`
+- Optional GUI dependencies (`PyQt5`) in `requirements-gui.txt`
 
 ## Structure
 

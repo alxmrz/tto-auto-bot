@@ -5,16 +5,9 @@ import sys
 
 
 class DebugOverlay(QWidget):
-    def __init__(self):
+    def __init__(self, app):
         super().__init__()
-        # На весь экран
-        screens = QApplication.screens()
-        target_screen = screens[0]
-
-        print("TARGET SCREEN: ", target_screen.geometry().x(), target_screen.geometry().y(), target_screen.geometry().width(),
-                  target_screen.geometry().height())
-
-#        self.setGeometry(target_screen.geometry())
+        self.app = app
 
         # Настройки окна
         self.setWindowFlags(
@@ -35,13 +28,12 @@ class DebugOverlay(QWidget):
         self.cell_size = 63
         self.show()
 
-        # Принудительно убираем отступы
-        self.setContentsMargins(0, 0, 0, 0)
 
     def update_cells(self, cells, cell_size=63):
         self.cells = cells
         self.cell_size = cell_size
         self.update()  # перерисовка
+        self.app.processEvents()
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -57,9 +49,8 @@ class DebugOverlay(QWidget):
         for row in self.cells:
             for (x, y, _) in row:
                 # Корректируем координаты с учётом смещения окна
-                corrected_x = x - window_x
-                corrected_y = y - window_y
-
-                left = corrected_x
-                top = corrected_y
+                left = x - window_x
+                top = y - window_y
                 painter.drawRect(left, top, self.cell_size, self.cell_size)
+    def quit(self):
+        self.app.quit()

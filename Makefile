@@ -2,10 +2,10 @@ init:
 	cp -n .env.example .env
 
 install:
-	pip install -e ".[dev]"
+	pip install -r requirements.txt
 
 run:
-	python3 main.py
+	PYTHONPATH=. .venv/bin/python main.py
 
 test:
 	PYTHONPATH=. .venv/bin/python -m pytest tests/ -v

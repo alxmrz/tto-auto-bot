@@ -15,17 +15,15 @@ from src.logger import Logger
 logger = Logger(enable=True)
 config = Config()
 running = True
-
-app = None
+sct = mss.MSS()
 overlay = None
 
 if config.gui_enabled:
-    import sys
-    from PyQt5.QtWidgets import QApplication
     from src.debug import DebugOverlay
+    from PyQt5.QtWidgets import QApplication
+    import sys
 
-    app = QApplication(sys.argv)
-    overlay = DebugOverlay()
+    overlay = DebugOverlay(QApplication(sys.argv))
 
 
 def on_press(key):
@@ -33,11 +31,9 @@ def on_press(key):
     if key == keyboard.Key.esc:
         logger.info("EXIT")
         running = False
-        if app is not None:
-            app.quit()
+        if overlay is not None:
+            overlay.quit()
 
-
-sct = mss.MSS()
 
 try:
     image = Image(sct, config.threshold)
@@ -51,9 +47,6 @@ try:
 
         if overlay is not None:
             overlay.update_cells(cells)
-
-        if app is not None:
-            app.processEvents()
 
         time.sleep(1)
 
